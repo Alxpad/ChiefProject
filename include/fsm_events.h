@@ -2,12 +2,12 @@
 #define FSM_EVENTS_H
 
 #include <tinyfsm.hpp>
+#include <chrono>
 
-//FSM states for the main program
-//Declare events that state machine will listen to
+namespace fsm {
+//Events declarations
 
 struct BaseEvent : tinyfsm::Event {};
-
 struct turnOn : BaseEvent {};
 struct turnOff : BaseEvent {};
 struct enter_setup : BaseEvent {};
@@ -20,5 +20,8 @@ struct shot : BaseEvent {};
 struct new_tag_detected : BaseEvent {};
 struct check_update_data : BaseEvent {};
 struct check_update_tag : BaseEvent {};
+
+
+}
 
 #endif // FSM_EVENTS_H
