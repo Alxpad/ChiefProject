@@ -43,6 +43,27 @@ class Running : public Fsm_ChiefSight
     void entry() override{
         ESP_LOGI("FSM", "Running state");
     }
+
+    void react(shot const &){
+        transit<Update_data>();
+    }
+
+    //TODO: Scanner function ST25DV
+};
+
+class Update_data : public Fsm_ChiefSight
+{
+    void entry() override
+    {
+        ESP_LOGI("FSM", "Updating data");
+    }
+
+    void react(checkUpdateData_true const &)
+    {
+        transit<Running>();
+    }
+
+    //TODO: Implementar check falso (Comprobar que se cumplen las condiciones)
 };
 
 //-------------------------------------------------------------

@@ -8,16 +8,16 @@
 //----------------------------------------
 // event declarations
 
-struct setup_done   : tinyfsm::Event { };
-struct enterSetup   : tinyfsm::Event { };
-struct timer_5s     : tinyfsm::Event { };
-struct setting_up   : tinyfsm::Event { };
-struct error_logged    : tinyfsm::Event { };
-struct shot  : tinyfsm::Event { };
-struct checkUpdateData_false  : tinyfsm::Event { };
-struct checkUpdateData_true  : tinyfsm::Event { };
-struct checkUpdateTag_true  : tinyfsm::Event { };
-struct checkUpdateTag_false  : tinyfsm::Event { };
+struct setup_done               : tinyfsm::Event { };
+struct enterSetup               : tinyfsm::Event { };
+struct timer_5s                 : tinyfsm::Event { };
+struct setting_up               : tinyfsm::Event { };
+struct error_logged             : tinyfsm::Event { };
+struct shot                     : tinyfsm::Event { };
+struct checkUpdateData_false    : tinyfsm::Event { };
+struct checkUpdateData_true     : tinyfsm::Event { };
+struct checkUpdateTag_true      : tinyfsm::Event { };
+struct checkUpdateTag_false     : tinyfsm::Event { };
 
 //--------------------------------------------
 // FSM declaration
@@ -30,6 +30,14 @@ class Fsm_ChiefSight : public tinyfsm::Fsm<Fsm_ChiefSight>
         void react(setup_done const &);
         void react(enterSetup const &);
         void react(timer_5s const &);
+        void react(setting_up const &);
+        void react(error_logged const &);
+        void react(shot const &);
+        void react(checkUpdateData_false const &);
+        void react(checkUpdateData_true const &);
+        void react(checkUpdateTag_true const &);
+        void react(checkUpdateTag_false const &);
+
 
         /* Declaración no-virtual: Será la misma en todos los estados */
         //void react()
