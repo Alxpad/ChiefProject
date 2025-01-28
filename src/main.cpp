@@ -13,7 +13,15 @@ extern "C" int app_main() {
     setup_done setup;
     enterSetup enter;
     timer_5s timer;
+    setting_up setting;
+    error_logged error;
+    shot shot;
+    checkUpdateData_false checkDataFalse;
+    checkUpdateData_true checkDataTrue;
+    checkUpdateTag_true checkTagTrue;
+    checkUpdateTag_false checkTagFalse;
     
+
     
     return 0;
     

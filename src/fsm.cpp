@@ -4,6 +4,12 @@
 // ----------------------------------------------------------------------------
 // Estados de la fsm
 
+//-- Forward declaration
+
+class Update_data;
+
+//-------
+
 class StateOn : public Fsm_ChiefSight
 {
     void entry() override{
