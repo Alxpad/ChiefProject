@@ -4,7 +4,7 @@
 #include <tinyfsm.hpp>
 #include <string>
 #include "esp_log.h"
-
+#include "reader_st25dv.h"
 //----------------------------------------
 // event declarations
 
