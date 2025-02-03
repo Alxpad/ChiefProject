@@ -16,7 +16,15 @@ class Update_data;
 class StateOn : public Fsm_ChiefSight
 {
     void entry() override{
+         
+        config_I2C();
+        config_ST25DV_user();
         
+        i2c_master_bus_handle_t bus_handle;
+        ESP_ERROR_CHECK(i2c_new_master_bus(&I2C_busConfig,&bus_handle));
+
+        i2c_master_dev_handle_t dev_handle;
+        ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle,&ST25DV_busConfig,&dev_handle));     
 
         ESP_LOGI("FSMStateOn", "State on entry");
         // Create a timer with a 5-second period
