@@ -5,6 +5,7 @@
 #include <string>
 #include "esp_log.h"
 #include "reader_st25dv.h"
+#include "st25dv_registers.h"
 //----------------------------------------
 // event declarations
 

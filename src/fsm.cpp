@@ -1,5 +1,8 @@
 #include "fsm.h"
 #include <freertos/FreeRTOS.h>
+#include "st25dv.h" // Include the header file that defines st25dv_ndef_record
+#include "st25dv_ndef.h"
+#include <cstring> // Include the header file for memset
 
 // ----------------------------------------------------------------------------
 // Estados de la fsm
@@ -13,7 +16,7 @@ class Update_data;
 class StateOn : public Fsm_ChiefSight
 {
     void entry() override{
-        ST25dv_device::getInstance().I2C_Config();
+        
 
         ESP_LOGI("FSMStateOn", "State on entry");
         // Create a timer with a 5-second period
@@ -59,9 +62,38 @@ class Running : public Fsm_ChiefSight
                 // Handle timer expiration
                 ESP_LOGI("FSMRunning", "Launching ST TestFunction");
                 ST25dv_device::getInstance().test_function();
-                uint8_t value = 0; 
-                st25dv_read_byte(ST25DV_USER_ADDRESS, 0x00, &value);
-                ESP_LOGI("FSMRunning", "Reading 0x00 value : 0x%02X\n", value);
+                
+                //TEST ------ {Create ST25DV instance here}
+
+                i2c_config_t i2c_config_params;
+    
+                i2c_config_params.mode = I2C_MODE_MASTER;
+                i2c_config_params.sda_io_num = GPIO_NUM_21;
+                i2c_config_params.scl_io_num = GPIO_NUM_22;
+                i2c_config_params.sda_pullup_en = GPIO_PULLUP_DISABLE;
+                i2c_config_params.scl_pullup_en = GPIO_PULLUP_DISABLE;
+                i2c_config_params.master.clk_speed = ST25DV_MAX_CLK_SPEED;
+                i2c_config_params.clk_flags = 0;
+                
+                st25dv_config st25dv_config_params;
+                st25dv_config_params.user_address = ST25DV_USER_ADDRESS;
+                st25dv_config_params.system_address = ST25DV_SYSTEM_ADDRESS;
+
+                ESP_ERROR_CHECK(st25dv_init_i2c(I2C_NUM_1, i2c_config_params));
+                
+                ESP_LOGI("ST25DV", "I2C configured and initialized");
+                std25dv_ndef_record *read = (std25dv_ndef_record*)malloc(sizeof(std25dv_ndef_record));
+                memset(read, 0 , sizeof(std25dv_ndef_record));
+                uint8_t record_num = 2;
+                uint8_t record_count = 0;
+
+                st25dv_ndef_read(st25dv_config_params,record_num,read,&record_count);
+                printf("Record %d type : %s\n", record_num, read->type);
+
+                
+                
+
+                // -------
             }
         );
 

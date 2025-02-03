@@ -7,7 +7,9 @@
 extern "C" int app_main() {
 
     ESP_LOGI("main", "Iniciando programa");
-    
+    ST25dv_device::getInstance().I2C_Config();
+    //-----------------------
+
     Fsm_ChiefSight::start();
 
     setup_done setup;
@@ -20,8 +22,6 @@ extern "C" int app_main() {
     checkUpdateData_true checkDataTrue;
     checkUpdateTag_true checkTagTrue;
     checkUpdateTag_false checkTagFalse;
-    
-
     
     return 0;
     
