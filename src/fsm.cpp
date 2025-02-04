@@ -16,35 +16,10 @@ class Update_data;
 
 class StateOn : public Fsm_ChiefSight
 {
+    init_i2c_config i2c_conf;
+
+    
     void entry() override{
-        
-        i2c_master_bus_config_t I2C_busConfig;
-            I2C_busConfig.i2c_port = I2C_NUM_0;
-            I2C_busConfig.sda_io_num = GPIO_NUM_21;
-            I2C_busConfig.scl_io_num = GPIO_NUM_22;
-            I2C_busConfig.clk_source = I2C_CLK_SRC_DEFAULT;
-            I2C_busConfig.glitch_ignore_cnt = 0;
-            I2C_busConfig.intr_priority = 1;
-            I2C_busConfig.flags.enable_internal_pullup = 0;
-            I2C_busConfig.flags.allow_pd = 0;
-
-        const i2c_device_config_t ST25DV_config
-        {
-            .dev_addr_length = I2C_ADDR_BIT_LEN_7,
-            .device_address = ST25DV_USER_ADDRESS,
-            .scl_speed_hz = ST25DV_MAX_CLK_SPEED,
-            .scl_wait_us = 200
-        };
-        
-        i2c_master_bus_handle_t bus_handle;
-        ESP_ERROR_CHECK(i2c_new_master_bus(&I2C_busConfig,&bus_handle));
-
-        // Create bus and device connection
-        i2c_master_dev_handle_t dev_handle;
-        ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &ST25DV_config, &dev_handle));
-
-
-
         ESP_LOGI("FSMStateOn", "State on entry");
         // Create a timer with a 5-second period
         TimerHandle_t timer5 = xTimerCreate(
@@ -52,10 +27,8 @@ class StateOn : public Fsm_ChiefSight
             pdMS_TO_TICKS(5000),      // Timer period in ticks (5 seconds)
             pdFALSE,                  // Auto-reload (pdFALSE means one-shot)
             NULL,                // Timer ID
-            [](TimerHandle_t xTimer) { // Timer callback function
-                // Handle timer expiration
-                ESP_LOGI("FSMStateOn", "Timer expired, transitioning to Running state");
-                xTimerStop(xTimer, 0);
+            [](TimerHandle_t xTimer){
+                ESP_LOGI("FSMStateOn", "Timer expired");
                 Fsm_ChiefSight::dispatch(timer_5s());
             }
         );
@@ -78,27 +51,25 @@ class setupMode : public Fsm_ChiefSight
 
 class Running : public Fsm_ChiefSight
 {
+    
+
+
+    static void timedFunction(TimerHandle_t xTimer, init_i2c_config &conf)
+    {
+        ESP_LOGI("FSMRunning","Probing i2c");
+        ESP_ERROR_CHECK(i2c_master_probe(conf.bus_handle, ST25DV_USER_ADDRESS,-1));
+    }
+
     void entry() override{
+        static init_i2c_config i2c_conf;
+        i2c_conf.init_i2c_connection();
         ESP_LOGI("FSMRunning", "Running state");
         TimerHandle_t timer2 = xTimerCreate(
             "Timer5s",                // Timer name
             pdMS_TO_TICKS(2000),      // Timer period in ticks (5 seconds)
             pdTRUE,                  // Auto-reload (pdFALSE means one-shot)
             NULL,                // Timer ID
-            [](TimerHandle_t xTimer) { // Timer callback function
-                // Handle timer expiration
-                ESP_LOGI("FSMRunning", "Launching ST TestFunction");
-                
-                //TEST ------ {Create ST25DV instance here}
-
-                ESP_LOGI("ST25DV", "I2C configured and initialized");
-                std25dv_ndef_record *read = (std25dv_ndef_record*)malloc(sizeof(std25dv_ndef_record));
-                memset(read, 0 , sizeof(std25dv_ndef_record));
-                uint8_t record_num = 2;
-                uint8_t record_count = 0;
-
-                // -------
-            }
+            [](TimerHandle_t xTimer) { timedFunction(xTimer, i2c_conf); }
         );
 
         // Start the timer
