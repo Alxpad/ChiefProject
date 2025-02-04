@@ -20,12 +20,7 @@ extern "C" {
 class ST25dv_device {
 public:
     static ST25dv_device& getInstance(); // Retorna la única instancia
-    void I2C_Config(); // Configura el I2C
-    void test_function(); // Método de prueba
-    
-    i2c_config_t i2c_config_dev;    
-    st25dv_config st25dv_config_dev;
-
+        
 private:
     ST25dv_device() {} // Constructor privado
     ST25dv_device(const ST25dv_device&) = delete;

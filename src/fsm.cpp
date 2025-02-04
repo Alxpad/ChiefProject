@@ -3,6 +3,7 @@
 #include "st25dv.h" // Include the header file that defines st25dv_ndef_record
 #include "st25dv_ndef.h"
 #include <cstring> // Include the header file for memset
+#include <driver/i2c_master.h>
 
 // ----------------------------------------------------------------------------
 // Estados de la fsm
@@ -16,15 +17,33 @@ class Update_data;
 class StateOn : public Fsm_ChiefSight
 {
     void entry() override{
-         
-        config_I2C();
-        config_ST25DV_user();
+        
+        i2c_master_bus_config_t I2C_busConfig;
+            I2C_busConfig.i2c_port = I2C_NUM_0;
+            I2C_busConfig.sda_io_num = GPIO_NUM_21;
+            I2C_busConfig.scl_io_num = GPIO_NUM_22;
+            I2C_busConfig.clk_source = I2C_CLK_SRC_DEFAULT;
+            I2C_busConfig.glitch_ignore_cnt = 0;
+            I2C_busConfig.intr_priority = 1;
+            I2C_busConfig.flags.enable_internal_pullup = 0;
+            I2C_busConfig.flags.allow_pd = 0;
+
+        const i2c_device_config_t ST25DV_config
+        {
+            .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+            .device_address = ST25DV_USER_ADDRESS,
+            .scl_speed_hz = ST25DV_MAX_CLK_SPEED,
+            .scl_wait_us = 200
+        };
         
         i2c_master_bus_handle_t bus_handle;
         ESP_ERROR_CHECK(i2c_new_master_bus(&I2C_busConfig,&bus_handle));
 
+        // Create bus and device connection
         i2c_master_dev_handle_t dev_handle;
-        ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle,&ST25DV_busConfig,&dev_handle));     
+        ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &ST25DV_config, &dev_handle));
+
+
 
         ESP_LOGI("FSMStateOn", "State on entry");
         // Create a timer with a 5-second period
@@ -69,37 +88,14 @@ class Running : public Fsm_ChiefSight
             [](TimerHandle_t xTimer) { // Timer callback function
                 // Handle timer expiration
                 ESP_LOGI("FSMRunning", "Launching ST TestFunction");
-                ST25dv_device::getInstance().test_function();
                 
                 //TEST ------ {Create ST25DV instance here}
 
-                i2c_config_t i2c_config_params;
-    
-                i2c_config_params.mode = I2C_MODE_MASTER;
-                i2c_config_params.sda_io_num = GPIO_NUM_21;
-                i2c_config_params.scl_io_num = GPIO_NUM_22;
-                i2c_config_params.sda_pullup_en = GPIO_PULLUP_DISABLE;
-                i2c_config_params.scl_pullup_en = GPIO_PULLUP_DISABLE;
-                i2c_config_params.master.clk_speed = ST25DV_MAX_CLK_SPEED;
-                i2c_config_params.clk_flags = 0;
-                
-                st25dv_config st25dv_config_params;
-                st25dv_config_params.user_address = ST25DV_USER_ADDRESS;
-                st25dv_config_params.system_address = ST25DV_SYSTEM_ADDRESS;
-
-                ESP_ERROR_CHECK(st25dv_init_i2c(I2C_NUM_1, i2c_config_params));
-                
                 ESP_LOGI("ST25DV", "I2C configured and initialized");
                 std25dv_ndef_record *read = (std25dv_ndef_record*)malloc(sizeof(std25dv_ndef_record));
                 memset(read, 0 , sizeof(std25dv_ndef_record));
                 uint8_t record_num = 2;
                 uint8_t record_count = 0;
-
-                st25dv_ndef_read(st25dv_config_params,record_num,read,&record_count);
-                printf("Record %d type : %s\n", record_num, read->type);
-
-                
-                
 
                 // -------
             }

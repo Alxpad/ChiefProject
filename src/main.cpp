@@ -7,7 +7,6 @@
 extern "C" int app_main() {
 
     ESP_LOGI("main", "Iniciando programa");
-    ST25dv_device::getInstance().I2C_Config();
     //-----------------------
 
     Fsm_ChiefSight::start();
