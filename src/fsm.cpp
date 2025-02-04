@@ -58,6 +58,17 @@ class Running : public Fsm_ChiefSight
     {
         ESP_LOGI("FSMRunning","Probing i2c");
         ESP_ERROR_CHECK(i2c_master_probe(conf.bus_handle, ST25DV_USER_ADDRESS,-1));
+        
+        //TODO: Read from device 
+        uint8_t message[10]{0};
+        uint8_t dyn_reg[] = {0x20,0x00};
+        uint8_t enable_FTM[] = {0x20,0x00,0x01};
+        uint8_t receivedData[1];
+        // Enabling fast transfer mode
+        ESP_LOGI("FSMRunning", "Reading ST25DV dynamic register MB_CTRL_Dyn");
+        ESP_ERROR_CHECK(i2c_master_transmit_receive(conf.dev_handle,dyn_reg,sizeof(dyn_reg),receivedData,1,-1));
+        ESP_LOGI("FSMRunning", "Value ST25dv_read in mem addr 0x%02X%02X: value 0x%02X",dyn_reg[0],dyn_reg[1],receivedData[0]);
+
     }
 
     void entry() override{

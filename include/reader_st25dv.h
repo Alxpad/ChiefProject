@@ -56,12 +56,14 @@ struct init_i2c_config
     };
         
     i2c_master_bus_handle_t bus_handle;
-    
+    i2c_master_dev_handle_t dev_handle;
+
     void init_i2c_connection() {
         ESP_ERROR_CHECK(i2c_new_master_bus(&I2C_busConfig, &bus_handle));
 
     // Create bus and device connection
-        i2c_master_dev_handle_t dev_handle;
+    // Note: Accessing user address from this device_handler
+    // TODO: Implement a customizable device constructor to allow access as system or user based on choice
         ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &ST25DV_config, &dev_handle));
     }
 };
