@@ -49,14 +49,19 @@ class Running : public Fsm_ChiefSight
     void entry() override{
         ESP_LOGI("FSM", "Running state");
         TimerHandle_t timer2s = xTimerCreate(
-            "Timer5s",                // Timer name
+            "Timer2s",                // Timer name
             pdMS_TO_TICKS(2000),      // Timer period in ticks (5 seconds)
-            pdFALSE,                  // Auto-reload (pdFALSE means one-shot)
+            pdTRUE,                  // Auto-reload (pdFALSE means one-shot)
             NULL,                // Timer ID
             [](TimerHandle_t xTimer) { // Timer callback function
                 // Handle timer expiration
                 ESP_LOGI("FSM", "Timer expired, transitioning to Running state");
-                xTimerStop(xTimer, 0);
+                uint8_t read_buffer[2];
+                uint8_t testAddress = 0x57;
+                auto *deviceHandle = i2c_protocol::ST25DV_i2c_params::getInstance().deviceHandle;
+                auto *busHandle = i2c_protocol::ST25DV_i2c_params::getInstance().busHandle;
+                i2c_protocol::i2c_probing(busHandle,testAddress);
+                //i2c_protocol::i2c_read_addr(deviceHandle, ST25DV_USER_ADDRESS,*read_buffer);
             }
         );
 
