@@ -11,7 +11,7 @@ namespace i2c_protocol
     {
         struct ST25DV_i2c_params
         {
-            const i2c_master_bus_config_t bus_config_params =
+             i2c_master_bus_config_t bus_config_params =
             {
                 .i2c_port = I2C_NUM_0,
                 .sda_io_num = GPIO_NUM_21,
@@ -23,7 +23,7 @@ namespace i2c_protocol
                 }
             };
 
-            const i2c_device_config_t dev_config_params =
+             i2c_device_config_t dev_config_params =
             {
                 .dev_addr_length = I2C_ADDR_BIT_LEN_7,
                 .device_address = ST25DV_USER_ADDRESS,
@@ -35,16 +35,16 @@ namespace i2c_protocol
 
             i2c_master_bus_handle_t busHandle;
             i2c_master_dev_handle_t deviceHandle;
-        void initI2C()
-        {
-            ESP_ERROR_CHECK(i2c_new_master_bus(&bus_config_params, &busHandle));
-        }
+            void initI2C()
+                {
+                    ESP_ERROR_CHECK(i2c_new_master_bus(&bus_config_params, &busHandle));
+                }
 
-        void addDeviceI2C()
-        {
-            ESP_ERROR_CHECK(i2c_master_bus_add_device(busHandle, &dev_config_params, &deviceHandle));
-        }
-        };
+            void addDeviceI2C()
+                {
+                    ESP_ERROR_CHECK(i2c_master_bus_add_device(busHandle, &dev_config_params, &deviceHandle));
+                }
+        } ;
     };
 }
 #endif

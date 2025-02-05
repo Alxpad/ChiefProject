@@ -15,7 +15,7 @@ class StateOn : public Fsm_ChiefSight
     void entry() override{
         ESP_LOGI("FSM", "State on entry");
         // Create a timer with a 5-second period
-        TimerHandle_t timer = xTimerCreate(
+        TimerHandle_t timer5s = xTimerCreate(
             "Timer5s",                // Timer name
             pdMS_TO_TICKS(5000),      // Timer period in ticks (5 seconds)
             pdFALSE,                  // Auto-reload (pdFALSE means one-shot)
@@ -29,8 +29,8 @@ class StateOn : public Fsm_ChiefSight
         );
 
         // Start the timer
-        if (timer != NULL) {
-            xTimerStart(timer, 0);
+        if (timer5s != NULL) {
+            xTimerStart(timer5s, 0);
         } else {
             ESP_LOGE("FSM", "Failed to create timer");
         }
@@ -48,6 +48,24 @@ class Running : public Fsm_ChiefSight
 {
     void entry() override{
         ESP_LOGI("FSM", "Running state");
+        TimerHandle_t timer2s = xTimerCreate(
+            "Timer5s",                // Timer name
+            pdMS_TO_TICKS(2000),      // Timer period in ticks (5 seconds)
+            pdFALSE,                  // Auto-reload (pdFALSE means one-shot)
+            NULL,                // Timer ID
+            [](TimerHandle_t xTimer) { // Timer callback function
+                // Handle timer expiration
+                ESP_LOGI("FSM", "Timer expired, transitioning to Running state");
+                xTimerStop(xTimer, 0);
+            }
+        );
+
+        // Start the timer
+        if (timer2s != NULL) {
+            xTimerStart(timer2s, 0);
+        } else {
+            ESP_LOGE("FSM", "Failed to create timer");
+        }
     }
 
     void react(shot const &){

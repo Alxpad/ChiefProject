@@ -2,12 +2,12 @@
 #include <esp_log.h>
 #include "fsm.h"
 
-//#include "I2C_setup.h"
-
 extern "C" int app_main() {
 
     ESP_LOGI("main", "Iniciando programa");
-    
+    i2c_protocol::ST25DV_i2c_params i2c_struct;
+    i2c_struct.initI2C();
+    i2c_struct.addDeviceI2C();
     Fsm_ChiefSight::start();
 
     setup_done setup;
