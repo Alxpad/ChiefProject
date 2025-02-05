@@ -1,7 +1,5 @@
 #include "fsm.h"
 #include <freertos/FreeRTOS.h>
-#include "st25dv.h" // Include the header file that defines st25dv_ndef_record
-#include "st25dv_ndef.h"
 #include <cstring> // Include the header file for memset
 #include <driver/i2c_master.h>
 

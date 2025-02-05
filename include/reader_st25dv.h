@@ -3,17 +3,12 @@
 
 #include <string>
 
-extern "C" {
-    #include "st25dv.h"
-    #include "st25dv_ndef.h"
-    #include "st25dv_registers.h"
-};
-
 #ifndef READER_ST25DV_H
 #define READER_ST25DV_H
 
 #include "esp_log.h"
 #include "esp_err.h"
+#include <driver/i2c_master.h>
 
 // Singleton structure
 
