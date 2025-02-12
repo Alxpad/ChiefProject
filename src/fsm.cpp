@@ -58,10 +58,31 @@ class Running : public Fsm_ChiefSight
                 ESP_LOGI("FSM", "Timer expired, transitioning to Running state");
                 uint8_t read_buffer[2];
                 uint8_t testAddress = 0x57;
-                auto *deviceHandle = i2c_protocol::ST25DV_i2c_params::getInstance().deviceHandle;
+                //i2c_protocol::ST25DV_i2c_params::getInstance().initI2C();
+                auto *deviceHandleUser = &i2c_protocol::ST25DV_i2c_params::getInstance().deviceHandle_user;
+                auto *deviceHandleSystem = &i2c_protocol::ST25DV_i2c_params::getInstance().deviceHandle_system;
                 auto *busHandle = i2c_protocol::ST25DV_i2c_params::getInstance().busHandle;
+                ESP_LOGI("FSMRunning","Probing bus");
                 i2c_protocol::i2c_probing(busHandle,testAddress);
+                ESP_LOGI("FSMRunning","Probing OK");
+                // Testing bus
+                if (deviceHandleUser == nullptr || deviceHandleSystem == nullptr) {
+                    ESP_LOGE("FSM", "Device handle is not initialized");
+                    return;
+                }
+                //ESP_LOGI("FSM", "Reading address");
                 //i2c_protocol::i2c_read_addr(deviceHandle, ST25DV_USER_ADDRESS,*read_buffer);
+                //ESP_LOGI("FSM", "Read value: %02X%02X", read_buffer[0], read_buffer[1]);
+        
+            //--------------
+                i2c_protocol::stdv25_ndef_record NDEFrecord;
+                uint8_t recordCount = 0;
+                ESP_LOGI("FSM", "I2C read NDEF");
+                
+                //ST25DV_t::getInstance().addDeviceI2C_ST25DV(&ST25DV_t::getInstance().dev_config_params_SYSTEM, &ST25DV_t::getInstance().deviceHandle_system);
+                //i2c_protocol::i2c_read_ndef(NDEFrecord,deviceHandleSystem,&recordCount);
+
+            //------------
             }
         );
 

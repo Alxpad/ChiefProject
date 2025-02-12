@@ -5,6 +5,9 @@
 #include <string>
 #include <esp_log.h>
 #include "i2c_protocol.h"
+
+using ST25DV_t = i2c_protocol::ST25DV_i2c_params;
+
 //----------------------------------------
 // event declarations
 

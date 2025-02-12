@@ -9,6 +9,13 @@
 extern "C"{
 namespace i2c_protocol
     {
+        typedef struct stdv25_ndef_record
+        {
+            uint8_t tnf;
+            char *type;
+            char *payload;
+        };
+
         class ST25DV_i2c_params
         {
         public:
@@ -33,21 +40,32 @@ namespace i2c_protocol
             }
             };
 
-            i2c_device_config_t dev_config_params =
+            i2c_device_config_t dev_config_params_USER =
             {
             .dev_addr_length = I2C_ADDR_BIT_LEN_7,
             .device_address = ST25DV_USER_ADDRESS,
             .scl_speed_hz = ST25DV_MAX_CLK_SPEED,
             .flags = {
                 .disable_ack_check = 1
-            }
+                }
+            };
+
+            i2c_device_config_t dev_config_params_SYSTEM =
+            {
+            .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+            .device_address = ST25DV_SYSTEM_ADDRESS,
+            .scl_speed_hz = ST25DV_MAX_CLK_SPEED,
+            .flags = {
+                .disable_ack_check = 1
+                }
             };
 
             i2c_master_bus_handle_t busHandle;
-            i2c_master_dev_handle_t deviceHandle;
+            i2c_master_dev_handle_t deviceHandle_user;
+            i2c_master_dev_handle_t deviceHandle_system;
 
             void initI2C();
-            void addDeviceI2C_ST25DV();
+            void addDeviceI2C_ST25DV(i2c_device_config_t devConfig , i2c_master_dev_handle_t devHandle , i2c_master_bus_handle_t busHabdle );
 
         private:
             ST25DV_i2c_params() = default;
@@ -56,6 +74,8 @@ namespace i2c_protocol
         //-------- Functions
         void i2c_read_addr(i2c_master_dev_handle_t &devHandle,uint8_t addressToWrite,uint8_t &output);
         void i2c_probing(i2c_master_bus_handle_t &busHandle, uint16_t addressToWrite);
+
+        void i2c_read_ndef(i2c_protocol::stdv25_ndef_record ndef_record, i2c_master_dev_handle_t &devHandle , uint8_t *record_count); // Read NFC tag
     };
 }
 #endif
