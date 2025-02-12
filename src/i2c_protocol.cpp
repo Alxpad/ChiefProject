@@ -7,9 +7,9 @@ void i2c_protocol::ST25DV_i2c_params::initI2C()
 
 }
 
-void i2c_protocol::ST25DV_i2c_params::addDeviceI2C_ST25DV(i2c_device_config_t devConfig , i2c_master_dev_handle_t devHandle , i2c_master_bus_handle_t busHandle)
+void i2c_protocol::ST25DV_i2c_params::addDeviceI2C_ST25DV(i2c_device_config_t &devConfig , i2c_master_dev_handle_t *devHandle , i2c_master_bus_handle_t *busHandle)
 {
-    ESP_ERROR_CHECK(i2c_master_bus_add_device(busHandle, &devConfig, &devHandle));
+    ESP_ERROR_CHECK(i2c_master_bus_add_device(*busHandle, &devConfig, devHandle));
 }
 
 void i2c_protocol::i2c_read_addr(i2c_master_dev_handle_t &devHandle, uint8_t addressToWrite, uint8_t &output)

@@ -65,7 +65,7 @@ namespace i2c_protocol
             i2c_master_dev_handle_t deviceHandle_system;
 
             void initI2C();
-            void addDeviceI2C_ST25DV(i2c_device_config_t devConfig , i2c_master_dev_handle_t devHandle , i2c_master_bus_handle_t busHabdle );
+            void addDeviceI2C_ST25DV(i2c_device_config_t &devConfig , i2c_master_dev_handle_t *devHandle , i2c_master_bus_handle_t *busHandle );
 
         private:
             ST25DV_i2c_params() = default;

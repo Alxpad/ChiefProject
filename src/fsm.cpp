@@ -48,6 +48,7 @@ class Running : public Fsm_ChiefSight
 {
     void entry() override{
         ESP_LOGI("FSM", "Running state");
+        // Initialize I2C
         TimerHandle_t timer2s = xTimerCreate(
             "Timer2s",                // Timer name
             pdMS_TO_TICKS(2000),      // Timer period in ticks (5 seconds)
@@ -70,9 +71,10 @@ class Running : public Fsm_ChiefSight
                     ESP_LOGE("FSM", "Device handle is not initialized");
                     return;
                 }
-                //ESP_LOGI("FSM", "Reading address");
-                //i2c_protocol::i2c_read_addr(deviceHandle, ST25DV_USER_ADDRESS,*read_buffer);
-                //ESP_LOGI("FSM", "Read value: %02X%02X", read_buffer[0], read_buffer[1]);
+
+                ESP_LOGI("FSM", "Reading address");
+                i2c_protocol::i2c_read_addr(*deviceHandleUser, ST25DV_USER_ADDRESS, *read_buffer);
+                ESP_LOGI("FSM", "Read value: %02X%02X", read_buffer[0], read_buffer[1]);
         
             //--------------
                 i2c_protocol::stdv25_ndef_record NDEFrecord;
