@@ -72,7 +72,7 @@ namespace i2c_protocol
         };
 
         //-------- Functions
-        void i2c_read_addr(i2c_master_dev_handle_t &devHandle,uint8_t addressToWrite,uint8_t &output);
+        void i2c_read_addr(i2c_master_dev_handle_t &devHandle,uint8_t *addressToWrite,uint8_t &output);
         void i2c_probing(i2c_master_bus_handle_t &busHandle, uint16_t addressToWrite);
 
         void i2c_read_ndef(i2c_protocol::stdv25_ndef_record ndef_record, i2c_master_dev_handle_t &devHandle , uint8_t *record_count); // Read NFC tag
